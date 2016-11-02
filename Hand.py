@@ -19,7 +19,7 @@ class Hand(object):
         self.Name = File_Name.split('.xyz')[0]
         self.N = int(File_Lines[0].strip('\n')) # Integer
         self.Node_List = np.empty(self.N, dtype=object)
-        self.Joint_List = np.empty(5, dtype=object)
+        self.Joint_List = np.empty(9, dtype=object)
         for i in range(self.N):
             Line = File_Lines[2+i]
             Line = Line.strip('\n').split()
@@ -29,10 +29,26 @@ class Hand(object):
             self.Node_List[i].Print_Info()
         
         self.print_xyz(append=False)
-        self.Joint_List[0] = Joint(self.Node_List[21], self.Node_List[17], self.Node_List[12])
-        self.Joint_List[1] = Joint(self.Node_List[22], self.Node_List[16], self.Node_List[13])
-        self.Joint_List[2] = Joint(self.Node_List[20], self.Node_List[18], self.Node_List[11])
-        self.Joint_List[3] = Joint(self.Node_List[23], self.Node_List[15], self.Node_List[14])
+        
+        # Thumb
+        self.Joint_List[0] = Joint(self.Node_List[19], self.Node_List[7], self.Node_List[6])
+        
+        # Index
+        self.Joint_List[1] = Joint(self.Node_List[18], self.Node_List[11], self.Node_List[6]) # M
+        self.Joint_List[2] = Joint(self.Node_List[20], self.Node_List[18], self.Node_List[11]) # P
+        
+        # Middle
+        self.Joint_List[3] = Joint(self.Node_List[17], self.Node_List[12], self.Node_List[9]) # M
+        self.Joint_List[4] = Joint(self.Node_List[21], self.Node_List[17], self.Node_List[12]) # P
+    
+        # Ring
+        self.Joint_List[5] = Joint(self.Node_List[16], self.Node_List[13], self.Node_List[10]) # M
+        self.Joint_List[6] = Joint(self.Node_List[22], self.Node_List[16], self.Node_List[13]) # P
+        
+        # Pinky
+        self.Joint_List[7] = Joint(self.Node_List[15], self.Node_List[14], self.Node_List[7]) # M
+        self.Joint_List[8] = Joint(self.Node_List[23], self.Node_List[15], self.Node_List[14]) # P
+        
         return
     
     def Wave(self, time):
@@ -87,12 +103,22 @@ class Hand(object):
 
     def Mimic_Voltage(self, Volt_List):
         
-        V1 = []
+        #NVolt_List = [[],[],[],[],[],[],[],[],[]]
+        Midpoint = 2;
+        for Volt in Volt_List:
+            for i in range(9):
+                #NVolt_List[i].append(Volt.Voltage[i])
+                Value = Volt.Voltage[i]
+                if self.Joint_List[i].Extended and Value > Midpoint:
+                    self.Joint_List[i].Rotate(-3.14/3)
+                    self.Joint_List[i].Extended = False
+                if (not self.Joint_List[i].Extended) and Value < Midpoint:
+                    self.Joint_List[i].Rotate(3.14/3)
+                    self.Joint_List[i].Extended = True
+            self.print_xyz()
 
-        for Volt_Obj in Volt_List:
-            V1.append(Volt.Voltage[1])
-        
-        V1 = np.asarray(V1)
+
+        # NVolt_List = np.asarray(NVolt_List)
 
         """
         # Optional plot
@@ -102,7 +128,7 @@ class Hand(object):
         plt.ylabel('Voltage')
         plt.ylim(V1.min(),V1.max())
         plt.show()
-        """
+        
         Midpoint = (V1.max() + V1.min())/2.0
 
         for V in V1:
@@ -112,8 +138,22 @@ class Hand(object):
             if (not self.Joint_List[0].Extended) and V < Midpoint:
                 self.Joint_List[0].Rotate(3.14/3)
                 self.Joint_List[0].Extended = True
-
             self.print_xyz()
+       
+        for i in range(9):
+            for V1 in NVolt_List[i]:
+                Midpoint = (V1.max() + V1.min())/2.0
+                for V in V1:
+                    if self.Joint_List[0].Extended and V > Midpoint:
+                        self.Joint_List[0].Rotate(-3.14/3)
+                        self.Joint_List[0].Extended = False
+                    if (not self.Joint_List[0].Extended) and V < Midpoint:
+                        self.Joint_List[0].Rotate(3.14/3)
+                        self.Joint_List[0].Extended = True
+                    self.print_xyz()
+            """
+        
+        
 
         return
 
