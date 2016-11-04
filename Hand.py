@@ -55,41 +55,10 @@ class Hand(object):
         
         return
     
-    def Wave(self, time):
-        for i in range(time):
-            self.Joint_List[0].Rotate(-3.14/4)
-            self.Joint_List[1].Rotate(-3.14/4)
-            self.Joint_List[2].Rotate(-3.14/4)
-            self.Joint_List[3].Rotate(-3.14/4)
-            self.print_xyz()
-            self.Joint_List[0].Rotate(-3.14/4)
-            self.Joint_List[1].Rotate(-3.14/4)
-            self.Joint_List[2].Rotate(-3.14/4)
-            self.Joint_List[3].Rotate(-3.14/4)
-            self.print_xyz()
-            self.Joint_List[0].Rotate(-3.14/4)
-            self.Joint_List[1].Rotate(-3.14/4)
-            self.Joint_List[2].Rotate(-3.14/4)
-            self.print_xyz()
-            self.Joint_List[0].Rotate(3.14/4)
-            self.Joint_List[1].Rotate(3.14/4)
-            self.Joint_List[2].Rotate(3.14/4)
-            self.print_xyz()
-            self.Joint_List[0].Rotate(3.14/4)
-            self.Joint_List[1].Rotate(3.14/4)
-            self.Joint_List[2].Rotate(3.14/4)
-            self.Joint_List[3].Rotate(3.14/4)
-            self.print_xyz()
-            self.Joint_List[0].Rotate(3.14/4)
-            self.Joint_List[1].Rotate(3.14/4)
-            self.Joint_List[2].Rotate(3.14/4)
-            self.Joint_List[3].Rotate(3.14/4)
-            self.print_xyz()
-        return
 
 
     def print_xyz(self, append=True):
-        File_Name = "Hand_Motion_Voltage.xyz"
+        File_Name = "Hand_Motion_Voltage_ABC.xyz"
         if append:
             File = open(File_Name, 'a')
         else:
@@ -108,59 +77,60 @@ class Hand(object):
     def Mimic_Voltage(self, Volt_List):
         
         #NVolt_List = [[],[],[],[],[],[],[],[],[]]
-        Thresh =
-        Midpoint = 2;
+        #Thresh = [ 2.85, 2.1, 2.65, 2.5, 2.53, 2.0, 2.8, 2.43, 2.9]
+        Thresh = [ 3.2, 2.1, 2.95, 2.89, 2.75, 2.85, 2.7, 2.9, 2.9]
         for Volt in Volt_List:
+            logic = []
+            # Loop through each sensor and find out what its state is
+            # State 1 is currently extended, needs to be rotated down
+            # State 2 is currently extended, needs to stay put
+            # State 3 is currently contracted, needs to extend
+            # State 4 is currently contracted, needs to stay put
             for i in range(9):
-                #NVolt_List[i].append(Volt.Voltage[i])
                 Value = Volt.Voltage[i]
-                if self.Joint_List[i].Extended and Value > Midpoint:
-                    self.Joint_List[i].Rotate(-3.14/3)
-                    self.Joint_List[i].Extended = False
-                if (not self.Joint_List[i].Extended) and Value < Midpoint:
-                    self.Joint_List[i].Rotate(3.14/3)
-                    self.Joint_List[i].Extended = True
-            self.print_xyz()
-
-
-        # NVolt_List = np.asarray(NVolt_List)
-
-        """
-        # Optional plot
-        plt.plot(V1)
-        plt.axhline(y=(V1.max() + V1.min())/2.0, color='r')
-        plt.xlabel('Time')
-        plt.ylabel('Voltage')
-        plt.ylim(V1.min(),V1.max())
-        plt.show()
-        
-        Midpoint = (V1.max() + V1.min())/2.0
-
-        for V in V1:
-            if self.Joint_List[0].Extended and V > Midpoint:
-                self.Joint_List[0].Rotate(-3.14/3)
-                self.Joint_List[0].Extended = False
-            if (not self.Joint_List[0].Extended) and V < Midpoint:
-                self.Joint_List[0].Rotate(3.14/3)
-                self.Joint_List[0].Extended = True
-            self.print_xyz()
-       
-        for i in range(9):
-            for V1 in NVolt_List[i]:
-                Midpoint = (V1.max() + V1.min())/2.0
-                for V in V1:
-                    if self.Joint_List[0].Extended and V > Midpoint:
-                        self.Joint_List[0].Rotate(-3.14/3)
-                        self.Joint_List[0].Extended = False
-                    if (not self.Joint_List[0].Extended) and V < Midpoint:
-                        self.Joint_List[0].Rotate(3.14/3)
-                        self.Joint_List[0].Extended = True
-                    self.print_xyz()
-            """
-        
-        
-
+                if self.Joint_List[i].Extended and Value > Thresh[i]:
+                    logic.append(1)
+                elif self.Joint_List[i].Extended and Value < Thresh[i]:
+                    logic.append(2)
+                elif (not self.Joint_List[i].Extended) and Value < Thresh[i]:
+                    logic.append(3)
+                else:
+                    #(not self.Joint_List[i].Extended) and Value > Thresh[i]:
+                    logic.append(4)
+            print logic
+            print "----------------------"
+            
+            # Loop through k three times to slow down hand motion
+            for k in range(3):
+                # Loop through each digit and apply the appropriate transformation
+                for i in range(9):
+                    if logic[i] == 1:
+                        self.Joint_List[i].Rotate(-3.14/9.0)
+                        self.Joint_List[i].Extended = False
+                    if logic[i] == 3:
+                        self.Joint_List[i].Rotate(3.14/9.0)
+                        self.Joint_List[i].Extended = True
+                self.print_xyz()
         return
+                
+  
+  
+  
+"""
+for k in range(3):
+self.Joint_List[i].Rotate(-3.14/9.0)
+self.print_xyz()
+self.Joint_List[i].Extended = False
+"""
+
+"""
+for k in range(3):
+self.Joint_List[i].Rotate(3.14/9.0)
+self.print_xyz()
+self.Joint_List[i].Extended = True
+"""
+
+
 
 
 

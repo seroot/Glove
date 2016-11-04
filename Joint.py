@@ -13,16 +13,14 @@ class Joint(object):
 
         
         # Compute initial value for the angle of the joint
-        print "------------------"
-        print "Initializing Joint"
         print self.Master.Position
         print self.Slave1.Position
         Vec1 = (self.Master.Position - self.Slave1.Position)
         self.Vec1 = Vec1/ np.linalg.norm(Vec1)
         Vec2 = (self.Slave1.Position - self.Slave2.Position)
         self.Vec2 = Vec2/ np.linalg.norm(self.Slave1.Position - self.Slave2.Position)
-        print Vec1, Vec2
-        print "Initial angle is ", 180 - np.arccos(np.dot(self.Vec1,self.Vec2))*(180./3.14), "degrees"
+        #print Vec1, Vec2
+        #print "Initial angle is ", 180 - np.arccos(np.dot(self.Vec1,self.Vec2))*(180./3.14), "degrees"
         print "------------------"
         
         
@@ -30,7 +28,7 @@ class Joint(object):
 
     def Rotate(self, Angle):
         if not self.Meta:
-            print "Rotating Proximal Joint"
+            #print "Rotating Proximal Joint"
             C = np.cos(Angle)
             S = np.sin(Angle)
             yt = self.Master.Position[1] - self.Slave1.Position[1]
@@ -42,10 +40,10 @@ class Joint(object):
             self.Vec1 = Vec1/ np.linalg.norm(Vec1)
             Vec2 = (self.Slave1.Position - self.Slave2.Position)
             self.Vec2 = Vec2/ np.linalg.norm(self.Slave1.Position - self.Slave2.Position)
-            print Vec1, Vec2
-            print "Angle for %dth is now ", 180 - np.arccos(np.dot(self.Vec1,self.Vec2))*(180./3.14), "degrees"
+            #print Vec1, Vec2
+            #print "Angle for %dth is now ", 180 - np.arccos(np.dot(self.Vec1,self.Vec2))*(180./3.14), "degrees"
         else:
-            print "Rotating Metacarpal Joint"
+            #print "Rotating Metacarpal Joint"
             C = np.cos(Angle)
             S = np.sin(Angle)
             # Rotate the master about the slave 1
@@ -59,8 +57,8 @@ class Joint(object):
             self.Vec1 = Vec1/ np.linalg.norm(Vec1)
             Vec2 = (self.Slave1.Position - self.Slave2.Position)
             self.Vec2 = Vec2/ np.linalg.norm(self.Slave1.Position - self.Slave2.Position)
-            print Vec1, Vec2
-            print "Angle for %dth is now ", 180 - np.arccos(np.dot(self.Vec1,self.Vec2))*(180./3.14), "degrees"
+            #print Vec1, Vec2
+            #print "Angle for %dth is now ", 180 - np.arccos(np.dot(self.Vec1,self.Vec2))*(180./3.14), "degrees"
         
         
             # Rotate the meta_slave about the slave 1
