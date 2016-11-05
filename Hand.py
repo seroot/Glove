@@ -30,35 +30,40 @@ class Hand(object):
         
         self.print_xyz(append=False)
         
+        
         # Thumb
-        self.Joint_List[0] = Joint(self.Node_List[19], self.Node_List[7], self.Node_List[6])
+        self.Joint_List[0] = Joint(self.Node_List[15], self.Node_List[14], self.Node_List[7], Meta = True, Thumb = True) # M
+        self.Joint_List[0].Meta_Slave = self.Node_List[23]
         
         # Index
-        self.Joint_List[1] = Joint(self.Node_List[18], self.Node_List[11], self.Node_List[6], Meta = True) # M
-        self.Joint_List[1].Meta_Slave = self.Node_List[20]
-        self.Joint_List[2] = Joint(self.Node_List[20], self.Node_List[18], self.Node_List[11]) # P
+        self.Joint_List[1] = Joint(self.Node_List[16], self.Node_List[13], self.Node_List[10], Meta = True) # M
+        self.Joint_List[1].Meta_Slave = self.Node_List[22]
+        self.Joint_List[2] = Joint(self.Node_List[22], self.Node_List[16], self.Node_List[13]) # P
         
         # Middle
         self.Joint_List[3] = Joint(self.Node_List[17], self.Node_List[12], self.Node_List[9], Meta = True) # M
         self.Joint_List[3].Meta_Slave = self.Node_List[21]
         self.Joint_List[4] = Joint(self.Node_List[21], self.Node_List[17], self.Node_List[12]) # P
-    
-        # Ring
-        self.Joint_List[5] = Joint(self.Node_List[16], self.Node_List[13], self.Node_List[10], Meta = True) # M
-        self.Joint_List[5].Meta_Slave = self.Node_List[22]
-        self.Joint_List[6] = Joint(self.Node_List[22], self.Node_List[16], self.Node_List[13]) # P
         
-        # Pinky
-        self.Joint_List[7] = Joint(self.Node_List[15], self.Node_List[14], self.Node_List[7], Meta = True) # M
-        self.Joint_List[7].Meta_Slave = self.Node_List[23]
-        self.Joint_List[8] = Joint(self.Node_List[23], self.Node_List[15], self.Node_List[14]) # P
+        # Ring
+        self.Joint_List[5] = Joint(self.Node_List[18], self.Node_List[11], self.Node_List[6], Meta = True) # M
+        self.Joint_List[5].Meta_Slave = self.Node_List[20]
+        self.Joint_List[6] = Joint(self.Node_List[20], self.Node_List[18], self.Node_List[11]) # P
+        
+        
+        # pinky
+        self.Joint_List[7] = Joint(self.Node_List[7], self.Node_List[6], self.Node_List[4], Meta = True)
+        self.Joint_List[7].Meta_Slave = self.Node_List[19]
+        self.Joint_List[8] = Joint(self.Node_List[19], self.Node_List[7], self.Node_List[6])
+        
+        
         
         return
     
 
 
     def print_xyz(self, append=True):
-        File_Name = "Hand_Motion_Voltage_ABC.xyz"
+        File_Name = "Hand_Motion_Voltage_UCSD.xyz"
         if append:
             File = open(File_Name, 'a')
         else:
@@ -97,8 +102,7 @@ class Hand(object):
                 else:
                     #(not self.Joint_List[i].Extended) and Value > Thresh[i]:
                     logic.append(4)
-            print logic
-            print "----------------------"
+
             
             # Loop through k three times to slow down hand motion
             for k in range(3):
@@ -113,22 +117,6 @@ class Hand(object):
                 self.print_xyz()
         return
                 
-  
-  
-  
-"""
-for k in range(3):
-self.Joint_List[i].Rotate(-3.14/9.0)
-self.print_xyz()
-self.Joint_List[i].Extended = False
-"""
-
-"""
-for k in range(3):
-self.Joint_List[i].Rotate(3.14/9.0)
-self.print_xyz()
-self.Joint_List[i].Extended = True
-"""
 
 
 
